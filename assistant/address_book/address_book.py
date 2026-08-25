@@ -1,7 +1,9 @@
 """AddressBook — collection of Records, keyed by name."""
 
+from collections import UserDict
+from assistant.models.record import Record
 
-class AddressBook():
+class AddressBook(UserDict):
     """A collection of Records, keyed by name.
 
     This class is a subclass of UserDict, which means it behaves like a
@@ -16,14 +18,14 @@ class AddressBook():
     def add_record(self, record):
         pass
 
-    def remove_record(self, name):
-        pass
+    def find(self, name: str) -> Record | None:
+        return self.data.get(name)
 
-    def get_record(self, name):
-        pass
-
-    def list_records(self):
-        pass
+    def delete(self, name: str) -> None:
+        if name in self.data:
+            del self.data[name]
+        else:
+            raise KeyError(name)
 
     def search(self, query):
         pass
