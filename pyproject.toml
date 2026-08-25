@@ -1,2 +1,15 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "assistant"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = ["colorama==0.4.6"]
+
 [project.optional-dependencies]
 dev = ["ruff>=0.6"]
+
+[project.scripts]
+assistant = "assistant.main:main"

@@ -8,7 +8,7 @@ Wire a new command by (1) writing the handler below and
 dispatches purely from that table, it never hardcodes command names.
 """
 
-from utils.decorators import input_error
+from assistant.utils.decorators import input_error
 
 
 @input_error

@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from models.fields import Address, Birthday, Email, Name, Phone
+from assistant.models.fields import Address, Birthday, Email, Name, Phone
 
 class Record:
     def __init__(self, name: Name, phone: Phone, email: Email):
