@@ -1,6 +1,6 @@
-"""Entry point: `python -m main` or the `assistant` console script."""
+"""Entry point: `python -m assistant.main` or the `assistant` console script."""
 
-from storage.storage import save_data, load_data
+from assistant.storage.storage import save_data, load_data
 
 WELCOME = """
 ==============================================
