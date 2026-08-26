@@ -8,129 +8,57 @@ Wire a new command by (1) writing the handler below and
 dispatches purely from that table, it never hardcodes command names.
 """
 
-from assistant.address_book.address_book import AddressBook
 from assistant.models.record import Record
-from assistant.notes.notes_book import NotesBook
+from assistant.address_book.address_book import AddressBook
 from assistant.utils.decorators import input_error
 
-@input_error
-def add_contact():
-    """Add a new contact to the address book."""
-    pass  # Implementation goes here
 
 @input_error
-def change_contact(args, book: AddressBook, notes: NotesBook):
-    pass
-
-
-@input_error
-def show_phone(args, book: AddressBook, notes: NotesBook) -> str:
-    (name,) = args
-    record = book.find(name)
+def add_contact_cmd(args, book: AddressBook):
+    name, phone = args[0], args[1] if len(args) > 1 else None
+    record = book.get(name)
     if record is None:
-        raise KeyError(name)
-    return str(record)
-
-
-def show_all(args, book: AddressBook, notes: NotesBook) -> str:
-    return str(book)
-
-
-@input_error
-def add_birthday(args, book: AddressBook, notes: NotesBook):
-    pass
+        record = Record(name)
+        book.add_record(record)
+        msg = "Contact created."
+    else:
+        msg = "Contact updated."
+    if phone:
+        record.add_phone(phone)
+    return msg
 
 
 @input_error
-def show_birthday(args, book: AddressBook, notes: NotesBook):
-    pass
+def delete_contact_cmd(args, book: AddressBook):
+    name = args[0]
+    if book.delete(name):
+        return f"Contact '{name}' deleted."
+    return "Contact not found."
 
 
 @input_error
-def birthdays(args, book: AddressBook, notes: NotesBook):
-    pass
+def edit_phone_cmd(args, book: AddressBook):
+    name, old_phone, new_phone = args
+    record = book.data.get(name)
+    if not record:
+        raise KeyError
+    record.edit_phone(old_phone, new_phone)
+    return "Phone updated successfully."
 
 
 @input_error
-def search_contacts(args, book: AddressBook, notes: NotesBook):
-    pass
+def search_cmd(args, book: AddressBook):
+    query = args[0]
+    results = book.search(query)
+    if not results:
+        return "No contacts matching query found."
+    return "\n".join(str(rec) for rec in results)
 
 
 @input_error
-def delete_contact(args, book: AddressBook, notes: NotesBook) -> str:
-    (name,) = args
-    book.delete(name)
-    return "Contact deleted."
-
-
-@input_error
-def add_note(args, book: AddressBook, notes: NotesBook):
-    pass
-
-
-def show_notes(args, book: AddressBook, notes: NotesBook) -> str:
-    return str(notes)
-
-
-@input_error
-def find_notes(args, book: AddressBook, notes: NotesBook):
-    pass
-
-
-@input_error
-def edit_note(args, book: AddressBook, notes: NotesBook):
-    pass
-
-
-@input_error
-def delete_note(args, book: AddressBook, notes: NotesBook):
-    (note_id,) = args
-    notes.delete(note_id)
-    return "Note deleted."
-
-
-# --- notes: bonus tags ------------------------------------------------------
-
-@input_error
-def add_tag(args, book: AddressBook, notes: NotesBook):
-    pass
-
-
-@input_error
-def find_notes_by_tag(args, book: AddressBook, notes: NotesBook):
-    pass
-
-
-def sort_notes_by_tag(args, book: AddressBook, notes: NotesBook):
-    pass
-
-
-def say_hello(args, book: AddressBook, notes: NotesBook) -> str:
-    return "How can I help you?"
-
-
-def show_help(args, book: AddressBook, notes: NotesBook):
-    pass
-
-
-COMMANDS = {
-    "hello": say_hello,
-    "help": show_help,
-    "add-contact": add_contact,
-    "change-contact": change_contact,
-    "phone": show_phone,
-    "all-contacts": show_all,
-    "add-birthday": add_birthday,
-    "show-birthday": show_birthday,
-    "birthdays": birthdays,
-    "search-contacts": search_contacts,
-    "delete-contact": delete_contact,
-    "add-note": add_note,
-    "all-notes": show_notes,
-    "find-notes": find_notes,
-    "edit-note": edit_note,
-    "delete-note": delete_note,
-    "add-tag": add_tag,
-    "find-notes-by-tag": find_notes_by_tag,
-    "sort-notes": sort_notes_by_tag,
-}
+def birthdays_cmd(args, book: AddressBook):
+    days = int(args[0]) if args else 7
+    upcoming = book.get_upcoming_birthdays(days_ahead=days)
+    if not upcoming:
+        return f"No upcoming birthdays for the next {days} days."
+    return "\n".join(f"{user['name']}: {user['congratulation_date']}" for user in upcoming)
