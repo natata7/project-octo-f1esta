@@ -14,14 +14,29 @@ from assistant.notes.notes_book import NotesBook
 from assistant.utils.decorators import input_error
 
 @input_error
-def add_contact():
+def add_contact(args, book: AddressBook, notes: NotesBook) -> str:
     """Add a new contact to the address book."""
-    pass  # Implementation goes here
+    name, phone = args
+    record = book.find(name)
+    if record is None:
+        record = Record(name)
+        book.add_record(record)
+        message = "Contact added."
+    else:
+        message = "Contact updated."
+    if phone:
+        record.add_phone(phone)
+    return message
 
 @input_error
-def change_contact(args, book: AddressBook, notes: NotesBook):
-    pass
-
+def change_contact(args, book: AddressBook, notes: NotesBook) -> str:
+    """Change an existing phone number for a contact."""
+    name, old_phone, new_phone = args
+    record = book.find(name)
+    if record is None:
+        raise KeyError(name)
+    record.edit_phone(old_phone, new_phone)
+    return "Contact updated."
 
 @input_error
 def show_phone(args, book: AddressBook, notes: NotesBook) -> str:
@@ -31,30 +46,24 @@ def show_phone(args, book: AddressBook, notes: NotesBook) -> str:
         raise KeyError(name)
     return str(record)
 
-
 def show_all(args, book: AddressBook, notes: NotesBook) -> str:
     return str(book)
-
 
 @input_error
 def add_birthday(args, book: AddressBook, notes: NotesBook):
     pass
 
-
 @input_error
 def show_birthday(args, book: AddressBook, notes: NotesBook):
     pass
-
 
 @input_error
 def birthdays(args, book: AddressBook, notes: NotesBook):
     pass
 
-
 @input_error
 def search_contacts(args, book: AddressBook, notes: NotesBook):
     pass
-
 
 @input_error
 def delete_contact(args, book: AddressBook, notes: NotesBook) -> str:
@@ -62,25 +71,20 @@ def delete_contact(args, book: AddressBook, notes: NotesBook) -> str:
     book.delete(name)
     return "Contact deleted."
 
-
 @input_error
 def add_note(args, book: AddressBook, notes: NotesBook):
     pass
 
-
 def show_notes(args, book: AddressBook, notes: NotesBook) -> str:
     return str(notes)
-
 
 @input_error
 def find_notes(args, book: AddressBook, notes: NotesBook):
     pass
 
-
 @input_error
 def edit_note(args, book: AddressBook, notes: NotesBook):
     pass
-
 
 @input_error
 def delete_note(args, book: AddressBook, notes: NotesBook):
@@ -88,30 +92,22 @@ def delete_note(args, book: AddressBook, notes: NotesBook):
     notes.delete(note_id)
     return "Note deleted."
 
-
-
-
 @input_error
 def add_tag(args, book: AddressBook, notes: NotesBook):
     pass
-
 
 @input_error
 def find_notes_by_tag(args, book: AddressBook, notes: NotesBook):
     pass
 
-
 def sort_notes_by_tag(args, book: AddressBook, notes: NotesBook):
     pass
-
 
 def say_hello(args, book: AddressBook, notes: NotesBook) -> str:
     return "How can I help you?"
 
-
 def show_help(args, book: AddressBook, notes: NotesBook):
     pass
-
 
 COMMANDS = {
     "hello": say_hello,
