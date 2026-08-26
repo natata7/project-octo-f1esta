@@ -89,7 +89,7 @@ def delete_note(args, book: AddressBook, notes: NotesBook):
     return "Note deleted."
 
 
-# --- notes: bonus tags ------------------------------------------------------
+
 
 @input_error
 def add_tag(args, book: AddressBook, notes: NotesBook):
