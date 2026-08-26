@@ -7,4 +7,13 @@ instead of each handler having its own try/except.
 """
 
 def input_error(func):
-    pass
+    def inner(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except ValueError as e:
+            return str(e)
+        except IndexError:
+            return "Enter required arguments."
+        except KeyError:
+            return "Contact not found."
+    return inner

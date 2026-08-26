@@ -7,6 +7,10 @@ real base class other fields inherit from — don't just use plain
 strings inside Record.
 """
 
+from datetime import datetime
+import re
+
+
 class Field:
     def __init__(self, value):
         self.value = value
@@ -14,28 +18,36 @@ class Field:
     def __str__(self):
         return str(self.value)
 
-    def __repr__(self):
-        return f"{self.__class__.__name__}({self.value!r})"
 
 class Name(Field):
-    """A contact's name. Must be a non-empty string."""
     pass
+
 
 class Phone(Field):
-    """A contact's phone number. Must be a string of digits, optionally
-    starting with '+' and containing spaces or dashes.
-    """
-    pass
+    def __init__(self, value):
+        if not (isinstance(value, str) and len(value) == 10 and value.isdigit()):
+            raise ValueError("Phone number must contain exactly 10 digits.")
+        super().__init__(value)
+
 
 class Email(Field):
-    """A contact's email address. Must be a valid email format."""
-    pass
+    def __init__(self, value):
+        pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
+        if not re.match(pattern, value):
+            raise ValueError("Invalid email format. Example: user@example.com")
+        super().__init__(value)
+
 
 class Address(Field):
-    """A contact's physical address. Can be any non-empty string."""
     pass
+
 
 class Birthday(Field):
-    """A contact's birthday. Must be a date in the format YYYY-MM-DD."""
-    pass
+    def __init__(self, value):
+        try:
+            self.value = datetime.strptime(value, "%d.%m.%Y").date()
+        except ValueError:
+            raise ValueError("Invalid date format. Use DD.MM.YYYY")
 
+    def __str__(self):
+        return self.value.strftime("%d.%m.%Y")
