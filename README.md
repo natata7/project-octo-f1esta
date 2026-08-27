@@ -39,6 +39,8 @@ assistant/
 │   ├── parser.py         # розбір введеного рядка на команду, аргументи
 │   ├── commands.py       # обробники команд
 │   └── suggest.py        # бонус: підказка команди при помилці введення
+├── data/
+│   ├── data.py           # службовий файл для зберігання даних додатку, створюється після першого запуску
 ├── models/
 │   ├── fields.py         # Field, Name, Phone, Email, Address, Birthday
 │   ├── record.py         # Record (один контакт)
@@ -52,4 +54,13 @@ assistant/
 └── utils/
     ├── validators.py     # regex-валідація телефону/email/дати
     └── decorators.py     # @input_error — централізована обробка помилок вводу
+```
+
+В проєкті використується стандарт кодування [PEP 8](https://peps.python.org/pep-0008/). Під час розробки використовуйте команди:
+
+```
+ruff check                # перевірити весь код проєкту
+ruff check path/to/code/  # перевірити певну папку
+ruff format               # автоформатувати весь код проєкту
+ruff format path/to/code/ # автоформатувати певну папку
 ```
