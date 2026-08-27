@@ -12,6 +12,7 @@ from assistant.address_book.address_book import AddressBook
 from assistant.models.record import Record
 from assistant.notes.notes_book import NotesBook
 from assistant.utils.decorators import input_error
+from assistant.utils.colors import BOLD, CYAN, GREEN, RESET, YELLOW
 
 @input_error
 def add_contact():
@@ -111,74 +112,60 @@ def say_hello(args, book: AddressBook, notes: NotesBook) -> str:
 
 
 def show_help(args, book: AddressBook, notes: NotesBook) -> str:
-    return """
-            Available commands:
+    return f"""
+{BOLD}{CYAN}Available commands:{RESET}
 
-            General:
-            hello
-                Show greeting.
+{BOLD}{YELLOW}General:{RESET}
 
-            help
-                Show this help message.
+  {GREEN}hello{RESET} --> Show greeting
 
-            close / exit
-                Save data and exit the assistant.
+  {GREEN}help{RESET} --> Show this help message
 
-            Contacts:
-            add-contact
-                Add a new contact.
+  {GREEN}close / exit{RESET} --> Save data and exit the assistant
 
-            change-contact
-                Edit an existing contact.
+{BOLD}{YELLOW}Contacts:{RESET}
 
-            phone <name>
-                Show contact information by name.
+  {GREEN}add-contact{RESET} --> Add a new contact
 
-            all-contacts
-                Show all contacts.
+  {GREEN}change-contact{RESET} --> Edit an existing contact
 
-            search-contacts <query>
-                Search contacts.
+  {GREEN}phone <name>{RESET} --> Show contact information by name
 
-            delete-contact <name>
-                Delete a contact.
+  {GREEN}all-contacts{RESET} --> Show all contacts
 
-            Birthdays:
-            add-birthday
-                Add a birthday to a contact.
+  {GREEN}search-contacts <query>{RESET} --> Search contacts
 
-            show-birthday <name>
-                Show contact birthday.
+  {GREEN}delete-contact <name>{RESET} --> Delete a contact
 
-            birthdays
-                Show upcoming birthdays.
+{BOLD}{YELLOW}Birthdays:{RESET}
 
-            Notes:
-            add-note
-                Add a new note.
+  {GREEN}add-birthday{RESET} --> Add a birthday to a contact
 
-            all-notes
-                Show all notes.
+  {GREEN}show-birthday <name>{RESET} --> Show contact birthday
 
-            find-notes <query>
-                Search notes.
+  {GREEN}birthdays{RESET} --> Show upcoming birthdays
 
-            edit-note
-                Edit an existing note.
+{BOLD}{YELLOW}Notes:{RESET}
 
-            delete-note <id>
-                Delete a note.
+  {GREEN}add-note{RESET} --> Add a new note
 
-            Tags:
-            add-tag
-                Add a tag to a note.
+  {GREEN}all-notes{RESET} --> Show all notes
 
-            find-notes-by-tag <tag>
-                Find notes by tag.
+  {GREEN}find-notes <query>{RESET} --> Search notes
 
-            sort-notes
-                Sort notes by tags.
-            """.strip()
+  {GREEN}edit-note{RESET} --> Edit an existing note
+
+  {GREEN}delete-note <id>{RESET} --> Delete a note
+
+{BOLD}{YELLOW}Tags:{RESET}
+
+  {GREEN}add-tag{RESET} --> Add a tag to a note
+
+  {GREEN}find-notes-by-tag <tag>{RESET} --> Find notes by tag
+
+  {GREEN}sort-notes{RESET} --> Sort notes by tags
+  
+""".strip()
 
 
 
