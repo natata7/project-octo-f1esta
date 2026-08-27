@@ -12,6 +12,8 @@ class Record:
         self.address = Address(address) if address else None
 
     def add_phone(self, phone_number):
+        if self.find_phone(phone_number):
+            raise ValueError("Phone already exists.")
         phone = Phone(phone_number)
         self.phones.append(phone)
 
