@@ -109,8 +109,77 @@ def say_hello(args, book: AddressBook, notes: NotesBook) -> str:
     return "How can I help you?"
 
 
-def show_help(args, book: AddressBook, notes: NotesBook):
-    pass
+
+def show_help(args, book: AddressBook, notes: NotesBook) -> str:
+    return """
+            Available commands:
+
+            General:
+            hello
+                Show greeting.
+
+            help
+                Show this help message.
+
+            close / exit
+                Save data and exit the assistant.
+
+            Contacts:
+            add-contact
+                Add a new contact.
+
+            change-contact
+                Edit an existing contact.
+
+            phone <name>
+                Show contact information by name.
+
+            all-contacts
+                Show all contacts.
+
+            search-contacts <query>
+                Search contacts.
+
+            delete-contact <name>
+                Delete a contact.
+
+            Birthdays:
+            add-birthday
+                Add a birthday to a contact.
+
+            show-birthday <name>
+                Show contact birthday.
+
+            birthdays
+                Show upcoming birthdays.
+
+            Notes:
+            add-note
+                Add a new note.
+
+            all-notes
+                Show all notes.
+
+            find-notes <query>
+                Search notes.
+
+            edit-note
+                Edit an existing note.
+
+            delete-note <id>
+                Delete a note.
+
+            Tags:
+            add-tag
+                Add a tag to a note.
+
+            find-notes-by-tag <tag>
+                Find notes by tag.
+
+            sort-notes
+                Sort notes by tags.
+            """.strip()
+
 
 
 COMMANDS = {
