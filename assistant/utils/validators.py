@@ -7,6 +7,11 @@ regexes) makes it easy to unit test and to reuse from both the
 address book and any future import/export feature.
 """
 
+class ValidationError(Exception):
+    """Raised when user input fails validation."""
+
+    pass
+
 def validate_phone():
     pass
 

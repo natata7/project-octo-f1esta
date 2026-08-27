@@ -11,6 +11,8 @@ instead of each handler having its own try/except.
 from functools import wraps
 from typing import Any, Callable
 
+from assistant.utils.validators import ValidationError
+
 
 def input_error(func: Callable) -> Callable:
 
@@ -18,6 +20,9 @@ def input_error(func: Callable) -> Callable:
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         try:
             return func(*args, **kwargs)
+
+        except ValidationError as error:
+            return f"Error: {error}"
 
         except ValueError as error:
             return f"Error: {error}"
