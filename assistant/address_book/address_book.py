@@ -3,20 +3,18 @@
 from collections import UserDict
 from assistant.models.record import Record
 
-class AddressBook(UserDict):
-    """A collection of Records, keyed by name.
 
-    This class is a subclass of UserDict, which means it behaves like a
-    dictionary. Each key is a contact's name (string), and each value is
-    a Record object containing the contact's details.
-    """
+class AddressBook(UserDict):
+    """A collection of Records, keyed by name."""
 
     def __init__(self):
         super().__init__()
         self.data = {}
 
-    def add_record(self, record):
-        pass
+    def add_record(self, record: Record):
+        if record.name.value in self.data:
+            raise ValueError(f"Contact '{record.name.value}' already exists.")
+        self.data[record.name.value] = record
 
     def find(self, name: str) -> Record | None:
         return self.data.get(name)
@@ -27,5 +25,20 @@ class AddressBook(UserDict):
         else:
             raise KeyError(name)
 
-    def search(self, query):
-        pass
+    def search(self, query: str) -> list[Record]:
+        q = query.lower()
+        results = []
+        for record in self.data.values():
+            if q in record.name.value.lower():
+                results.append(record)
+                continue
+            if any(q in phone.value for phone in record.phones):
+                results.append(record)
+                continue
+            if record.email and q in record.email.value.lower():
+                results.append(record)
+                continue
+            if record.address and q in record.address.value.lower():
+                results.append(record)
+                continue
+        return results
