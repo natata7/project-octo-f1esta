@@ -12,6 +12,7 @@ from assistant.address_book.address_book import AddressBook
 from assistant.models.record import Record
 from assistant.notes.notes_book import NotesBook
 from assistant.utils.decorators import input_error
+from assistant.utils.colors import BOLD, CYAN, GREEN, RESET, YELLOW
 
 @input_error
 def add_contact():
@@ -119,8 +120,63 @@ def say_hello(args, book: AddressBook, notes: NotesBook) -> str:
     return "How can I help you?"
 
 
-def show_help(args, book: AddressBook, notes: NotesBook):
-    pass
+
+def show_help(args, book: AddressBook, notes: NotesBook) -> str:
+    return f"""
+{BOLD}{CYAN}Available commands:{RESET}
+
+{BOLD}{YELLOW}General:{RESET}
+
+  {GREEN}hello{RESET} --> Show greeting
+
+  {GREEN}help{RESET} --> Show this help message
+
+  {GREEN}close / exit{RESET} --> Save data and exit the assistant
+
+{BOLD}{YELLOW}Contacts:{RESET}
+
+  {GREEN}add-contact{RESET} --> Add a new contact
+
+  {GREEN}change-contact{RESET} --> Edit an existing contact
+
+  {GREEN}phone <name>{RESET} --> Show contact information by name
+
+  {GREEN}all-contacts{RESET} --> Show all contacts
+
+  {GREEN}search-contacts <query>{RESET} --> Search contacts
+
+  {GREEN}delete-contact <name>{RESET} --> Delete a contact
+
+{BOLD}{YELLOW}Birthdays:{RESET}
+
+  {GREEN}add-birthday{RESET} --> Add a birthday to a contact
+
+  {GREEN}show-birthday <name>{RESET} --> Show contact birthday
+
+  {GREEN}birthdays{RESET} --> Show upcoming birthdays
+
+{BOLD}{YELLOW}Notes:{RESET}
+
+  {GREEN}add-note{RESET} --> Add a new note
+
+  {GREEN}all-notes{RESET} --> Show all notes
+
+  {GREEN}find-notes <query>{RESET} --> Search notes
+
+  {GREEN}edit-note{RESET} --> Edit an existing note
+
+  {GREEN}delete-note <id>{RESET} --> Delete a note
+
+{BOLD}{YELLOW}Tags:{RESET}
+
+  {GREEN}add-tag{RESET} --> Add a tag to a note
+
+  {GREEN}find-notes-by-tag <tag>{RESET} --> Find notes by tag
+
+  {GREEN}sort-notes{RESET} --> Sort notes by tags
+  
+""".strip()
+
 
 
 COMMANDS = {
