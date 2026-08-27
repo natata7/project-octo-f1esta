@@ -64,8 +64,10 @@ def delete_contact(args, book: AddressBook, notes: NotesBook) -> str:
 
 
 @input_error
-def add_note(args, book: AddressBook, notes: NotesBook):
-    pass
+def add_note(args, book: AddressBook, notes: NotesBook) -> str:
+    text = " ".join(args)
+    note = notes.add_note(text)
+    return str(note)
 
 
 def show_notes(args, book: AddressBook, notes: NotesBook) -> str:
@@ -73,18 +75,26 @@ def show_notes(args, book: AddressBook, notes: NotesBook) -> str:
 
 
 @input_error
-def find_notes(args, book: AddressBook, notes: NotesBook):
-    pass
+def find_notes(args, book: AddressBook, notes: NotesBook) -> str:
+    query = " ".join(args)
+    return str(notes.find(query))
 
 
 @input_error
-def edit_note(args, book: AddressBook, notes: NotesBook):
-    pass
+def edit_note(args, book: AddressBook, notes: NotesBook) -> str:
+
+    note_id = args[0]
+
+    new_text = " ".join(args[1:])
+
+    return str(notes.edit(note_id, new_text))
 
 
 @input_error
-def delete_note(args, book: AddressBook, notes: NotesBook):
-    (note_id,) = args
+def delete_note(args, book: AddressBook, notes: NotesBook) -> str:
+    note_id = args[0]
+    if note_id not in notes.data:
+        return "Note not found."
     notes.delete(note_id)
     return "Note deleted."
 
