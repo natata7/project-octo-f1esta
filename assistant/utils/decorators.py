@@ -25,11 +25,15 @@ def input_error(func: Callable) -> Callable:
             return f"Error: {error}"
 
         except ValueError as error:
-            return f"Error: {error}"
+            return "Error: invalid or missing arguments for this command."
 
         except KeyError as error:
-            message = error.args[0] if error.args else "Item not found."
-            return f"Error: {message}"
+            key = error.args[0] if error.args else None
+
+            if key:
+                return f"Error: '{key}' not found."
+
+            return "Error: Item not found."
 
         except IndexError:
             return "Error: Not enough arguments."
