@@ -7,8 +7,8 @@ notes: NotesBook) -> str and is wrapped with @input_error.
 from assistant.address_book.address_book import AddressBook
 from assistant.models.record import Record
 from assistant.notes.notes_book import NotesBook
-from assistant.utils.decorators import input_error
 from assistant.utils.colors import BOLD, CYAN, GREEN, RESET, YELLOW
+from assistant.utils.decorators import input_error
 
 
 @input_error
@@ -116,7 +116,11 @@ def delete_contact(args, book: AddressBook, notes: NotesBook) -> str:
 
 @input_error
 def add_note(args, book: AddressBook, notes: NotesBook):
-    pass
+    text = " ".join(args).strip()
+    if not text:
+        raise ValueError("Enter note text.")
+    note = notes.add_note(text)
+    return f"Note added with ID: {note.id}"
 
 
 def show_notes(args, book: AddressBook, notes: NotesBook) -> str:
@@ -125,12 +129,22 @@ def show_notes(args, book: AddressBook, notes: NotesBook) -> str:
 
 @input_error
 def find_notes(args, book: AddressBook, notes: NotesBook):
-    pass
+    if not args:
+        raise ValueError("Enter search query.")
+    query = " ".join(args)
+    results = notes.search(query)
+    if not results:
+        return "No notes found."
+    return "\n".join(str(note) for note in results)
 
 
 @input_error
 def edit_note(args, book: AddressBook, notes: NotesBook):
-    pass
+    if len(args) < 2:
+        raise ValueError("Give me note ID and new text please.")
+    note_id, new_text = args[0], " ".join(args[1:])
+    notes.edit(note_id, new_text)
+    return "Note updated."
 
 
 @input_error
@@ -144,16 +158,27 @@ def delete_note(args, book: AddressBook, notes: NotesBook):
 
 @input_error
 def add_tag(args, book: AddressBook, notes: NotesBook):
-    pass
+    if len(args) < 2:
+        raise ValueError("Give me note ID and at least one tag please.")
+    note_id, tags = args[0], args[1:]
+    note = notes.add_tag(note_id, tags)
+    return f"Tag(s) added. {note}"
 
 
 @input_error
 def find_notes_by_tag(args, book: AddressBook, notes: NotesBook):
-    pass
+    if not args:
+        raise ValueError("Enter a tag.")
+    results = notes.search_by_tag(args[0])
+    if not results:
+        return "No notes found."
+    return "\n".join(str(note) for note in results)
 
 
 def sort_notes_by_tag(args, book: AddressBook, notes: NotesBook):
-    pass
+    if not notes.data:
+        return "No notes yet."
+    return "\n".join(str(note) for note in notes.sort_by_tag())
 
 
 def say_hello(args, book: AddressBook, notes: NotesBook) -> str:
@@ -197,23 +222,23 @@ def show_help(args, book: AddressBook, notes: NotesBook) -> str:
 
 {BOLD}{YELLOW}Notes:{RESET}
 
-  {GREEN}add-note{RESET} --> Add a new note
+  {GREEN}add-note <text>{RESET} --> Add a new note
 
   {GREEN}all-notes{RESET} --> Show all notes
 
-  {GREEN}find-notes <query>{RESET} --> Search notes
+  {GREEN}find-notes <query>{RESET} --> Search notes by text or tag
 
-  {GREEN}edit-note{RESET} --> Edit an existing note
+  {GREEN}edit-note <id> <text>{RESET} --> Edit an existing note
 
   {GREEN}delete-note <id>{RESET} --> Delete a note
 
 {BOLD}{YELLOW}Tags:{RESET}
 
-  {GREEN}add-tag{RESET} --> Add a tag to a note
+  {GREEN}add-tag <id> <tag> [tag ...]{RESET} --> Add tag(s) to a note
 
   {GREEN}find-notes-by-tag <tag>{RESET} --> Find notes by tag
 
-  {GREEN}sort-notes{RESET} --> Sort notes by tags
+  {GREEN}sort-notes{RESET} --> Show notes sorted by tags
   
 """.strip()
 
