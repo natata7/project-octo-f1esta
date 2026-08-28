@@ -61,18 +61,36 @@ def show_all(args, book: AddressBook, notes: NotesBook) -> str:
 
 
 @input_error
-def add_birthday(args, book: AddressBook, notes: NotesBook):
-    pass
+def add_birthday(args, book: AddressBook, notes: NotesBook) -> str:
+    if len(args) < 2:
+        raise ValueError("Give me name and birthday (DD.MM.YYYY) please.")
+    name, bday = args[0], args[1]
+    record = book.find(name)
+    if not record:
+        raise KeyError(name)
+    record.add_birthday(bday)
+    return "Birthday added."
 
 
 @input_error
-def show_birthday(args, book: AddressBook, notes: NotesBook):
-    pass
+def show_birthday(args, book: AddressBook, notes: NotesBook) -> str:
+    if not args:
+        raise ValueError("Enter contact name.")
+    name = args[0]
+    record = book.find(name)
+    if not record:
+        raise KeyError(name)
+    if not record.birthday:
+        return f"{name} doesn't have a birthday specified."
+    return f"{name}'s birthday: {record.birthday}"
 
 
 @input_error
-def birthdays(args, book: AddressBook, notes: NotesBook):
-    pass
+def birthdays(args, book: AddressBook, notes: NotesBook) -> str:
+    upcoming = book.get_upcoming_birthdays()
+    if not upcoming:
+        return "No upcoming birthdays for the next week."
+    return "\n".join(f"{item['name']}: {item['congratulation_date']}" for item in upcoming)
 
 
 @input_error
