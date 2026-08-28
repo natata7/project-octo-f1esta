@@ -15,7 +15,7 @@ class ValidationError(Exception):
     pass
 
 def validate_phone(phone: str) -> str:
-    normalized_phone = re.sub(r"[\s()-]", "", phone)
+    normalized_phone = re.sub(r"\D", "", phone)
 
     if normalized_phone.startswith("380") and len(normalized_phone) == 12:
         return f"+{normalized_phone}"
