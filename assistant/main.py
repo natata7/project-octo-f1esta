@@ -2,8 +2,9 @@
 
 from assistant.cli.commands import COMMANDS
 from assistant.cli.parser import parse_input
+from assistant.cli.suggest import suggest_command
 from assistant.storage.storage import load_data, save_data
-from assistant.utils.colors import BOLD, CYAN, RED, RESET
+from assistant.utils.colors import BOLD, CYAN, GREEN, RED, RESET
 
 EXIT_COMMANDS = {"close", "exit"}
 
@@ -38,7 +39,17 @@ def main() -> None:
 
             handler = COMMANDS.get(command)
             if handler is None:
-                print(f"{BOLD}{RED}Unknown command. Type {BOLD}{CYAN}'help'{RESET}{BOLD}{RED} to see available commands.{RESET}")
+                suggestion = suggest_command(command, COMMANDS)
+                if suggestion:
+                    print(
+                        f"{BOLD}{RED}Unknown command.{RESET} "
+                        f"Did you mean {BOLD}{GREEN}'{suggestion}'{RESET}?"
+                    )
+                else:
+                    print(
+                        f"{BOLD}{RED}Unknown command. Type {CYAN}'help'{RED} "
+                        f"to see available commands.{RESET}"
+                    )
                 continue
 
             print(handler(args, book, notes))
