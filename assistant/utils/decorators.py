@@ -24,7 +24,7 @@ def input_error(func: Callable) -> Callable:
         except ValidationError as error:
             return f"Error: {error}"
 
-        except ValueError as error:
+        except ValueError:
             return "Error: invalid or missing arguments for this command."
 
         except KeyError as error:
