@@ -1,3 +1,5 @@
+# assistant/utils/decorators.py
+
 """Decorators shared across CLI command handlers.
 
 Acceptance criterion #10 ("програма коректно обробляє некоректне
@@ -7,16 +9,33 @@ instead of each handler having its own try/except.
 """
 
 from functools import wraps
+from typing import Any, Callable
 
-def input_error(func):
+from assistant.utils.validators import ValidationError
+
+
+def input_error(func: Callable) -> Callable:
+
     @wraps(func)
-    def inner(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         try:
             return func(*args, **kwargs)
-        except KeyError:
-            return "Contact not found."
-        except ValueError as e:
-            return str(e)
+
+        except ValidationError as error:
+            return f"Error: {error}"
+
+        except ValueError:
+            return "Error: invalid or missing arguments for this command."
+
+        except KeyError as error:
+            key = error.args[0] if error.args else None
+
+            if key:
+                return f"Error: '{key}' not found."
+
+            return "Error: Item not found."
+
         except IndexError:
-            return "Enter the argument for the command."
-    return inner
+            return "Error: Not enough arguments."
+
+    return wrapper

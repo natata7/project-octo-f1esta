@@ -9,15 +9,10 @@ address book and any future import/export feature.
 import re
 from datetime import datetime
 
+class ValidationError(Exception):
+    """Raised when user input fails validation."""
 
-
-
-
-
-
-
-
-
+    pass
 
 def validate_phone(phone: str) -> str:
     normalized_phone = re.sub(r"[\s()-]", "", phone)
