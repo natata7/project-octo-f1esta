@@ -1,3 +1,5 @@
+"""ANSI colour constants for colorama."""
+
 RESET = "\033[0m"
 BOLD = "\033[1m"
 

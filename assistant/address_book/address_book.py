@@ -2,7 +2,17 @@
 
 from collections import UserDict
 from datetime import datetime, timedelta
+
 from assistant.models.record import Record
+from assistant.utils.colors import RESET, YELLOW
+
+
+def _on_year(day, year):
+    """безпечний перенос 29 лютого на 28 лютого."""
+    try:
+        return day.replace(year=year)
+    except ValueError:
+        return day.replace(year=year, day=28)
 
 
 class AddressBook(UserDict):
@@ -19,6 +29,11 @@ class AddressBook(UserDict):
 
     def find(self, name: str) -> Record | None:
         return self.data.get(name)
+
+    def __str__(self) -> str:
+        if not self.data:
+            return f"{YELLOW}Address book is empty.{RESET}"
+        return "\n".join(str(record) for record in self.data.values())
 
     def delete(self, name: str) -> bool:
         if name in self.data:
@@ -39,7 +54,7 @@ class AddressBook(UserDict):
                 results.append(record)
         return results
 
-    def get_upcoming_birthdays(self, days_ahead=7):
+    def get_upcoming_birthdays(self, days_ahead: int = 7) -> list[dict[str, str]]:
         today = datetime.today().date()
         upcoming_birthdays = []
 
@@ -48,10 +63,10 @@ class AddressBook(UserDict):
                 continue
 
             bday = record.birthday.value
-            bday_this_year = bday.replace(year=today.year)
+            bday_this_year = _on_year(bday, today.year)
 
             if bday_this_year < today:
-                bday_this_year = bday_this_year.replace(year=today.year + 1)
+                bday_this_year = _on_year(bday, today.year + 1)
 
             days_until_bday = (bday_this_year - today).days
             if 0 <= days_until_bday <= days_ahead:
@@ -62,9 +77,11 @@ class AddressBook(UserDict):
                 elif congratulation_date.weekday() == 6:
                     congratulation_date += timedelta(days=1)
 
-                upcoming_birthdays.append({
-                    "name": record.name.value,
-                    "congratulation_date": congratulation_date.strftime("%d.%m.%Y")
-                })
+                upcoming_birthdays.append(
+                    {
+                        "name": record.name.value,
+                        "congratulation_date": congratulation_date.strftime("%d.%m.%Y"),
+                    }
+                )
 
         return upcoming_birthdays

@@ -6,13 +6,22 @@ failure. Keeping validation centralized here (instead of scattered
 regexes) makes it easy to unit test and to reuse from both the
 address book and any future import/export feature.
 """
+
 import re
 from datetime import datetime
+
+from assistant.utils.colors import RESET, YELLOW
+
 
 class ValidationError(Exception):
     """Raised when user input fails validation."""
 
-    pass
+
+def validate_name(name: str) -> str:
+    if not name or not name.strip():
+        raise ValidationError(f"{YELLOW}Name cannot be empty.{RESET}")
+    return name.strip()
+
 
 def validate_phone(phone: str) -> str:
     normalized_phone = re.sub(r"\D", "", phone)
@@ -24,25 +33,25 @@ def validate_phone(phone: str) -> str:
         return f"+38{normalized_phone}"
 
     raise ValidationError(
-        "Invalid phone number. Use format +380XXXXXXXXX or 0XXXXXXXXX."
+        f"{YELLOW}Invalid phone number. Use format +380XXXXXXXXX or 0XXXXXXXXX.{RESET}"
     )
 
-   
 
 def validate_email(email: str) -> str:
     pattern = r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
 
     if not re.fullmatch(pattern, email):
-        raise ValidationError("Invalid email format.")
+        raise ValidationError(f"{YELLOW}Invalid email format.{RESET}")
 
     return email
+
 
 def validate_birthday(birthday: str) -> str:
     try:
         datetime.strptime(birthday, "%d.%m.%Y")
     except ValueError:
         raise ValidationError(
-            "Invalid birthday. Use format DD.MM.YYYY."
+            f"{YELLOW}Invalid birthday. Use format DD.MM.YYYY.{RESET}"
         )
 
     return birthday

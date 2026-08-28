@@ -2,7 +2,9 @@
 
 from assistant.cli.commands import COMMANDS
 from assistant.cli.parser import parse_input
+from assistant.cli.suggest import suggest_command
 from assistant.storage.storage import load_data, save_data
+from assistant.utils.colors import BOLD, CYAN, GREEN, RED, RESET
 
 EXIT_COMMANDS = {"close", "exit"}
 
@@ -17,14 +19,14 @@ Type 'close' or 'exit' to quit and save.
 
 def main() -> None:
     book, notes = load_data()
-    print(WELCOME)
+    print(f"{BOLD}{CYAN}{WELCOME}{RESET}")
 
     try:
         while True:
             try:
-                user_input = input("assistant> ")
+                user_input = input(f"{BOLD}{GREEN}assistant> {RESET}")
             except (EOFError, KeyboardInterrupt):
-                print("\nGood bye!")
+                print(f"\n{BOLD}{CYAN}Good bye!{RESET}")
                 break
 
             command, args = parse_input(user_input)
@@ -32,12 +34,22 @@ def main() -> None:
                 continue
 
             if command in EXIT_COMMANDS:
-                print("Good bye!")
+                print(f"{BOLD}{CYAN}Good bye!{RESET}")
                 break
 
             handler = COMMANDS.get(command)
             if handler is None:
-                print("Unknown command. Type 'help' to see available commands.")
+                suggestion = suggest_command(command, COMMANDS)
+                if suggestion:
+                    print(
+                        f"{BOLD}{RED}Unknown command.{RESET} "
+                        f"Did you mean {BOLD}{GREEN}'{suggestion}'{RESET}?"
+                    )
+                else:
+                    print(
+                        f"{BOLD}{RED}Unknown command. Type {CYAN}'help'{RED} "
+                        f"to see available commands.{RESET}"
+                    )
                 continue
 
             print(handler(args, book, notes))
