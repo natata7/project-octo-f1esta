@@ -17,6 +17,9 @@ class AddressBook(UserDict):
             raise ValueError(f"Contact '{record.name.value}' already exists.")
         self.data[record.name.value] = record
 
+    def find(self, name: str) -> Record | None:
+        return self.data.get(name)
+
     def delete(self, name: str) -> bool:
         if name in self.data:
             del self.data[name]
