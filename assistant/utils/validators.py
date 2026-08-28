@@ -17,12 +17,17 @@ class ValidationError(Exception):
 def validate_phone(phone: str) -> str:
     normalized_phone = re.sub(r"[\s()-]", "", phone)
 
-    if not re.fullmatch(r"\+?\d{10,15}", normalized_phone):
-        raise ValidationError(
-            "Phone number must contain 10-15 digits and may start with '+'."
-        )
+    if normalized_phone.startswith("380") and len(normalized_phone) == 12:
+        return f"+{normalized_phone}"
 
-    return normalized_phone
+    if normalized_phone.startswith("0") and len(normalized_phone) == 10:
+        return f"+38{normalized_phone}"
+
+    raise ValidationError(
+        "Invalid phone number. Use format +380XXXXXXXXX or 0XXXXXXXXX."
+    )
+
+   
 
 def validate_email(email: str) -> str:
     pattern = r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
