@@ -19,14 +19,14 @@ Type 'close' or 'exit' to quit and save.
 
 def main() -> None:
     book, notes = load_data()
-    print(WELCOME)
+    print(f"{BOLD}{CYAN}{WELCOME}{RESET}")
 
     try:
         while True:
             try:
-                user_input = input("assistant> ")
+                user_input = input(f"{BOLD}{GREEN}assistant> {RESET}")
             except (EOFError, KeyboardInterrupt):
-                print("\nGood bye!")
+                print(f"\n{BOLD}{CYAN}Good bye!{RESET}")
                 break
 
             command, args = parse_input(user_input)
@@ -34,7 +34,7 @@ def main() -> None:
                 continue
 
             if command in EXIT_COMMANDS:
-                print("Good bye!")
+                print(f"{BOLD}{CYAN}Good bye!{RESET}")
                 break
 
             handler = COMMANDS.get(command)

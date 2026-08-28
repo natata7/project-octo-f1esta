@@ -1,5 +1,7 @@
 """Note — a text note with optional tags."""
 
+from assistant.utils.colors import BOLD, CYAN, RESET, YELLOW
+
 
 class Note:
     def __init__(self, text: str, tags: list[str] | None = None, id: str | None = None):
@@ -20,5 +22,5 @@ class Note:
         return True
 
     def __str__(self):
-        tags = f"  [#{', #'.join(self.tags)}]" if self.tags else ""
-        return f"[{self.id}] {self.text}{tags}"
+        tags = f"  {YELLOW}[#{', #'.join(self.tags)}]{RESET}" if self.tags else ""
+        return f"{BOLD}{CYAN}[{self.id}]{RESET} {self.text}{tags}"

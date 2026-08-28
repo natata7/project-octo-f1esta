@@ -1,6 +1,7 @@
 """NotesBook — collection of Notes, keyed by note id."""
 
 from assistant.models.note import Note
+from assistant.utils.colors import RESET, YELLOW
 
 
 class NotesBook:
@@ -59,5 +60,5 @@ class NotesBook:
 
     def __str__(self):
         if not self.data:
-            return "No notes yet."
+            return f"{YELLOW}No notes yet.{RESET}"
         return "\n".join(str(note) for note in self.data.values())

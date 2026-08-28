@@ -4,6 +4,7 @@ from collections import UserDict
 from datetime import datetime, timedelta
 
 from assistant.models.record import Record
+from assistant.utils.colors import RESET, YELLOW
 
 
 def _on_year(day, year):
@@ -31,7 +32,7 @@ class AddressBook(UserDict):
 
     def __str__(self) -> str:
         if not self.data:
-            return "Address book is empty."
+            return f"{YELLOW}Address book is empty.{RESET}"
         return "\n".join(str(record) for record in self.data.values())
 
     def delete(self, name: str) -> bool:

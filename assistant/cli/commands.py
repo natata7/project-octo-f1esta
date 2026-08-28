@@ -136,7 +136,8 @@ def birthdays(args, book: AddressBook, notes: NotesBook) -> str:
     if not upcoming:
         return f"{BOLD}{RED}No upcoming birthdays in the next {days} days.{RESET}"
     return "\n".join(
-        f"{item['name']}: {item['congratulation_date']}" for item in upcoming
+        f"{BOLD}{CYAN}{item['name']}{RESET}: {item['congratulation_date']}"
+        for item in upcoming
     )
 
 

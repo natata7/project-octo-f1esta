@@ -1,6 +1,7 @@
 """Record — a single contact entry in the AddressBook."""
 
 from assistant.models.fields import Address, Birthday, Email, Name, Phone
+from assistant.utils.colors import BOLD, CYAN, RESET
 from assistant.utils.validators import ValidationError, validate_phone
 
 
@@ -57,4 +58,7 @@ class Record:
         bday_str = f", birthday: {self.birthday}" if self.birthday else ""
         email_str = f", email: {self.email}" if self.email else ""
         addr_str = f", address: {self.address}" if self.address else ""
-        return f"Contact name: {self.name.value}, phones: {phones_str}{email_str}{addr_str}{bday_str}"
+        return (
+            f"Contact name: {BOLD}{CYAN}{self.name.value}{RESET}, "
+            f"phones: {phones_str}{email_str}{addr_str}{bday_str}"
+        )
