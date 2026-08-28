@@ -8,16 +8,30 @@ class NotesBook:
         self.data: dict[str, Note] = {}
 
     def add_note(self, text: str, tags: list[str] | None = None):
-        pass
+        note = Note(text, tags)
+        self.data[note.id] = note
+        return note
 
-    def find(self, note_id: str) -> Note | None:
-        return self.data.get(note_id)
+    def find(self, query: str):
+        result = NotesBook.search(query)
+
+        if result:
+            return result
+        else:
+            return "No matches."
 
     def delete(self, note_id: str) -> None:
         if note_id in self.data:
             del self.data[note_id]
         else:
-            raise KeyError(note_id)
+            print("Note not found.")
+            
+    def edit(self, note_id: str, new_text: str):
+        if note_id in self.data:
+            self.data[note_id].text = new_text
+            return self.data[note_id]
+        else:
+            return "Note not found."
 
     def search(self, query: str):
         pass
