@@ -9,12 +9,18 @@ address book and any future import/export feature.
 
 import re
 from datetime import datetime
-from assistant.utils.colors import YELLOW, RESET
+
+from assistant.utils.colors import RESET, YELLOW
 
 
 class ValidationError(Exception):
     """Raised when user input fails validation."""
 
+
+def validate_name(name: str) -> str:
+    if not name or not name.strip():
+        raise ValidationError(f"{YELLOW}Name cannot be empty.{RESET}")
+    return name.strip()
 
 
 def validate_phone(phone: str) -> str:
@@ -42,8 +48,10 @@ def validate_email(email: str) -> str:
 
 def validate_birthday(birthday: str) -> str:
     try:
-        datetime.strptime(birthday, "%d.%m.%Y").astimezone()
+        datetime.strptime(birthday, "%d.%m.%Y")
     except ValueError:
-        raise ValidationError(f"{YELLOW}Invalid birthday. Use format DD.MM.YYYY.{RESET}")
+        raise ValidationError(
+            f"{YELLOW}Invalid birthday. Use format DD.MM.YYYY.{RESET}"
+        )
 
     return birthday

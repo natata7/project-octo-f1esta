@@ -12,6 +12,7 @@ from datetime import datetime
 from assistant.utils.validators import (
     validate_birthday,
     validate_email,
+    validate_name,
     validate_phone,
 )
 
@@ -25,7 +26,8 @@ class Field:
 
 
 class Name(Field):
-    pass
+    def __init__(self, value):
+        super().__init__(validate_name(value))
 
 
 class Phone(Field):

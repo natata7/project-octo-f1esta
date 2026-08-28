@@ -1,6 +1,7 @@
 """Record — a single contact entry in the AddressBook."""
 
 from assistant.models.fields import Address, Birthday, Email, Name, Phone
+from assistant.utils.validators import ValidationError, validate_phone
 
 
 class Record:
@@ -33,8 +34,12 @@ class Record:
             raise ValueError(f"Phone number {old_phone_number} not found.")
 
     def find_phone(self, phone_number):
+        try:
+            target = validate_phone(phone_number)
+        except ValidationError:
+            target = phone_number
         for phone in self.phones:
-            if phone.value == phone_number:
+            if phone.value == target:
                 return phone
         return None
 
