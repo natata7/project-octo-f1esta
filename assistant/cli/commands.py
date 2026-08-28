@@ -14,7 +14,7 @@ from assistant.utils.decorators import input_error
 @input_error
 def add_contact(args, book: AddressBook, notes: NotesBook) -> str:
     if len(args) < 1:
-        raise ValueError("Give me name and phone please.")
+        raise ValueError("Give me a contact name please.")
     name = args[0]
     phone = args[1] if len(args) > 1 else None
 
@@ -42,7 +42,44 @@ def change_contact(args, book: AddressBook, notes: NotesBook) -> str:
         raise KeyError(name)
 
     record.edit_phone(old_phone, new_phone)
-    return "Contact updated."
+    return f"{BOLD}{GREEN}Contact updated.{RESET}"
+
+
+@input_error
+def add_email(args, book: AddressBook, notes: NotesBook) -> str:
+    if len(args) < 2:
+        raise ValueError("Give me name and email please.")
+    name, email = args[0], args[1]
+    record = book.find(name)
+    if record is None:
+        raise KeyError(name)
+    record.set_email(email)
+    return f"{BOLD}{GREEN}Email saved.{RESET}"
+
+
+@input_error
+def add_address(args, book: AddressBook, notes: NotesBook) -> str:
+    if len(args) < 2:
+        raise ValueError("Give me name and address please.")
+    name, address = args[0], " ".join(args[1:])
+    record = book.find(name)
+    if record is None:
+        raise KeyError(name)
+    record.set_address(address)
+    return f"{BOLD}{GREEN}Address saved.{RESET}"
+
+
+@input_error
+def remove_phone(args, book: AddressBook, notes: NotesBook) -> str:
+    if len(args) < 2:
+        raise ValueError("Give me name and phone please.")
+    name, phone = args[0], args[1]
+    record = book.find(name)
+    if record is None:
+        raise KeyError(name)
+    if not record.remove_phone(phone):
+        raise ValueError(f"Phone {phone} not found for {name}.")
+    return f"{BOLD}{GREEN}Phone removed.{RESET}"
 
 
 @input_error
@@ -87,9 +124,17 @@ def show_birthday(args, book: AddressBook, notes: NotesBook) -> str:
 
 @input_error
 def birthdays(args, book: AddressBook, notes: NotesBook) -> str:
-    upcoming = book.get_upcoming_birthdays()
+    days = 7
+    if args:
+        try:
+            days = int(args[0])
+        except ValueError:
+            raise ValueError("Number of days must be a whole number.") from None
+        if days < 0:
+            raise ValueError("Number of days must not be negative.")
+    upcoming = book.get_upcoming_birthdays(days)
     if not upcoming:
-        return f"{BOLD}{RED}No upcoming birthdays for the next week.{RESET}"
+        return f"{BOLD}{RED}No upcoming birthdays in the next {days} days.{RESET}"
     return "\n".join(
         f"{item['name']}: {item['congratulation_date']}" for item in upcoming
     )
@@ -100,7 +145,7 @@ def search_contacts(args, book: AddressBook, notes: NotesBook) -> str:
     """Search contacts by query string."""
     if not args:
         raise ValueError("Enter search query.")
-    query = args[0]
+    query = " ".join(args)
     results = book.search(query)
     if not results:
         return f"{BOLD}{RED}No contacts found.{RESET}"
@@ -112,7 +157,8 @@ def delete_contact(args, book: AddressBook, notes: NotesBook) -> str:
     if not args:
         raise ValueError("Enter user name.")
     name = args[0]
-    book.delete(name)
+    if not book.delete(name):
+        raise KeyError(name)
     return f"{BOLD}{GREEN}Contact deleted.{RESET}"
 
 
@@ -136,7 +182,7 @@ def find_notes(args, book: AddressBook, notes: NotesBook):
     query = " ".join(args)
     results = notes.search(query)
     if not results:
-        return "No notes found."
+        return f"{BOLD}{RED}No notes found.{RESET}"
     return "\n".join(str(note) for note in results)
 
 
@@ -146,7 +192,7 @@ def edit_note(args, book: AddressBook, notes: NotesBook):
         raise ValueError("Give me note ID and new text please.")
     note_id, new_text = args[0], " ".join(args[1:])
     notes.edit(note_id, new_text)
-    return "Note updated."
+    return f"{BOLD}{GREEN}Note updated.{RESET}"
 
 
 @input_error
@@ -155,7 +201,7 @@ def delete_note(args, book: AddressBook, notes: NotesBook):
         raise ValueError("Enter note ID.")
     note_id = args[0]
     notes.delete(note_id)
-    return "Note deleted."
+    return f"{BOLD}{GREEN}Note deleted.{RESET}"
 
 
 @input_error
@@ -164,7 +210,7 @@ def add_tag(args, book: AddressBook, notes: NotesBook):
         raise ValueError("Give me note ID and at least one tag please.")
     note_id, tags = args[0], args[1:]
     note = notes.add_tag(note_id, tags)
-    return f"{BOLD}{GREEN}Tag(s) added. {note}"
+    return f"{BOLD}{GREEN}Tag(s) added.{RESET} {note}"
 
 
 @input_error
@@ -197,17 +243,20 @@ def show_help(args, book: AddressBook, notes: NotesBook) -> str:
   {GREEN}close / exit{RESET} --> Save data and exit the assistant
 
 {BOLD}{YELLOW}Contacts:{RESET}
-  {GREEN}add-contact <name> <phone>{RESET} --> Add a new contact
-  {GREEN}change-contact <name> <phone>{RESET} --> Edit an existing contact
+  {GREEN}add-contact <name> [phone]{RESET} --> Add a new contact (or a phone to an existing one)
+  {GREEN}change-contact <name> <old-phone> <new-phone>{RESET} --> Replace a phone number
+  {GREEN}remove-phone <name> <phone>{RESET} --> Remove a phone number
+  {GREEN}add-email <name> <email>{RESET} --> Set the contact's email
+  {GREEN}add-address <name> <address>{RESET} --> Set the contact's address
   {GREEN}phone <name>{RESET} --> Show contact information by name
   {GREEN}all-contacts{RESET} --> Show all contacts
-  {GREEN}search-contacts <query>{RESET} --> Search contacts
+  {GREEN}search-contacts <query>{RESET} --> Search contacts by name/phone/email/address
   {GREEN}delete-contact <name>{RESET} --> Delete a contact
 
 {BOLD}{YELLOW}Birthdays:{RESET}
-  {GREEN}add-birthday{RESET} --> Add a birthday to a contact
+  {GREEN}add-birthday <name> <DD.MM.YYYY>{RESET} --> Add a birthday to a contact
   {GREEN}show-birthday <name>{RESET} --> Show contact birthday
-  {GREEN}birthdays{RESET} --> Show upcoming birthdays
+  {GREEN}birthdays [days]{RESET} --> Show birthdays in the next N days (default 7)
 
 {BOLD}{YELLOW}Notes:{RESET}
   {GREEN}add-note <text>{RESET} --> Add a new note
@@ -229,6 +278,9 @@ COMMANDS = {
     "help": show_help,
     "add-contact": add_contact,
     "change-contact": change_contact,
+    "remove-phone": remove_phone,
+    "add-email": add_email,
+    "add-address": add_address,
     "phone": show_phone,
     "all-contacts": show_all,
     "add-birthday": add_birthday,

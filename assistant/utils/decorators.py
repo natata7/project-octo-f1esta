@@ -11,8 +11,8 @@ instead of each handler having its own try/except.
 from collections.abc import Callable
 from functools import wraps
 from typing import Any
-from assistant.utils.colors import BOLD, RED, RESET
 
+from assistant.utils.colors import BOLD, RED, RESET
 from assistant.utils.validators import ValidationError
 
 
@@ -26,8 +26,9 @@ def input_error(func: Callable) -> Callable:
         except ValidationError as error:
             return f"{BOLD}{RED}Error:{RESET} {error}"
 
-        except ValueError:
-            return f"{BOLD}{RED}Error:{RESET} invalid or missing arguments for this command."
+        except ValueError as error:
+            message = str(error) or "invalid or missing arguments for this command."
+            return f"{BOLD}{RED}Error:{RESET} {message}"
 
         except TypeError:
             return f"{BOLD}{RED}Error:{RESET} Invalid input. Please provide the correct arguments."
