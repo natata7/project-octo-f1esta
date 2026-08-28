@@ -2,26 +2,35 @@
 
 from collections import UserDict
 from datetime import datetime, timedelta
+from assistant.models.record import Record
 
 
 class AddressBook(UserDict):
-    def add_record(self, record):
+    """A collection of Records, keyed by name."""
+
+    def __init__(self):
+        super().__init__()
+        self.data = {}
+
+    def add_record(self, record: Record):
+        if record.name.value in self.data:
+            raise ValueError(f"Contact '{record.name.value}' already exists.")
         self.data[record.name.value] = record
 
-    def delete(self, name):
+    def delete(self, name: str) -> bool:
         if name in self.data:
             del self.data[name]
             return True
         return False
 
-    def search(self, query):
-        query = query.lower()
+    def search(self, query: str) -> list[Record]:
+        q = query.lower()
         results = []
         for record in self.data.values():
-            name_match = query in record.name.value.lower()
-            phone_match = any(query in p.value for p in record.phones)
-            email_match = record.email and query in record.email.value.lower()
-            address_match = record.address and query in record.address.value.lower()
+            name_match = q in record.name.value.lower()
+            phone_match = any(q in p.value for p in record.phones)
+            email_match = record.email and q in record.email.value.lower()
+            address_match = record.address and q in record.address.value.lower()
 
             if name_match or phone_match or email_match or address_match:
                 results.append(record)
