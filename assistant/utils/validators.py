@@ -6,13 +6,16 @@ failure. Keeping validation centralized here (instead of scattered
 regexes) makes it easy to unit test and to reuse from both the
 address book and any future import/export feature.
 """
+
 import re
 from datetime import datetime
+
 
 class ValidationError(Exception):
     """Raised when user input fails validation."""
 
     pass
+
 
 def validate_phone(phone: str) -> str:
     normalized_phone = re.sub(r"\D", "", phone)
@@ -27,7 +30,6 @@ def validate_phone(phone: str) -> str:
         "Invalid phone number. Use format +380XXXXXXXXX or 0XXXXXXXXX."
     )
 
-   
 
 def validate_email(email: str) -> str:
     pattern = r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
@@ -37,12 +39,11 @@ def validate_email(email: str) -> str:
 
     return email
 
+
 def validate_birthday(birthday: str) -> str:
     try:
         datetime.strptime(birthday, "%d.%m.%Y")
     except ValueError:
-        raise ValidationError(
-            "Invalid birthday. Use format DD.MM.YYYY."
-        )
+        raise ValidationError("Invalid birthday. Use format DD.MM.YYYY.")
 
     return birthday

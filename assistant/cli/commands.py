@@ -90,7 +90,9 @@ def birthdays(args, book: AddressBook, notes: NotesBook) -> str:
     upcoming = book.get_upcoming_birthdays()
     if not upcoming:
         return "No upcoming birthdays for the next week."
-    return "\n".join(f"{item['name']}: {item['congratulation_date']}" for item in upcoming)
+    return "\n".join(
+        f"{item['name']}: {item['congratulation_date']}" for item in upcoming
+    )
 
 
 @input_error
@@ -185,7 +187,6 @@ def say_hello(args, book: AddressBook, notes: NotesBook) -> str:
     return "How can I help you?"
 
 
-
 def show_help(args, book: AddressBook, notes: NotesBook) -> str:
     return f"""
 {BOLD}{CYAN}Available commands:{RESET}
@@ -241,7 +242,6 @@ def show_help(args, book: AddressBook, notes: NotesBook) -> str:
   {GREEN}sort-notes{RESET} --> Show notes sorted by tags
   
 """.strip()
-
 
 
 COMMANDS = {

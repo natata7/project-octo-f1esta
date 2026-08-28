@@ -6,6 +6,7 @@ surface graders will look at (criterion #11), so keep Field as a
 real base class other fields inherit from — don't just use plain
 strings inside Record.
 """
+
 from datetime import datetime
 from assistant.utils.validators import (
     validate_phone,

@@ -48,7 +48,7 @@ class Record:
         self.address = Address(address_string)
 
     def __str__(self):
-        phones_str = '; '.join(p.value for p in self.phones) if self.phones else "None"
+        phones_str = "; ".join(p.value for p in self.phones) if self.phones else "None"
         bday_str = f", birthday: {self.birthday}" if self.birthday else ""
         email_str = f", email: {self.email}" if self.email else ""
         addr_str = f", address: {self.address}" if self.address else ""
