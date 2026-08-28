@@ -10,6 +10,9 @@ strings inside Record.
 from datetime import datetime
 
 from assistant.utils.validators import (
+    ValidationError,
+    validate_phone,
+    validate_email,
     validate_birthday,
     validate_email,
     validate_name,
@@ -27,7 +30,11 @@ class Field:
 
 class Name(Field):
     def __init__(self, value):
-        super().__init__(validate_name(value))
+        if not isinstance(value, str) or not value.strip():
+            raise ValidationError("Name cannot be empty.")
+
+        super().__init__(value.strip())
+
 
 
 class Phone(Field):
@@ -41,7 +48,11 @@ class Email(Field):
 
 
 class Address(Field):
-    pass
+    def __init__(self, value):
+        if not isinstance(value, str) or not value.strip():
+            raise ValidationError("Address cannot be empty.")
+
+        super().__init__(value.strip())
 
 
 class Birthday(Field):
