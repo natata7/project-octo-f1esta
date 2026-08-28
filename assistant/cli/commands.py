@@ -2,10 +2,6 @@
 
 Each handler has the signature (args: list[str], book: AddressBook,
 notes: NotesBook) -> str and is wrapped with @input_error.
-
-Wire a new command by (1) writing the handler below and
-(2) registering it in COMMANDS at the bottom of this file — main.py
-dispatches purely from that table, it never hardcodes command names.
 """
 
 from assistant.address_book.address_book import AddressBook
@@ -13,19 +9,46 @@ from assistant.models.record import Record
 from assistant.notes.notes_book import NotesBook
 from assistant.utils.decorators import input_error
 
-@input_error
-def add_contact():
-    """Add a new contact to the address book."""
-    pass  # Implementation goes here
 
 @input_error
-def change_contact(args, book: AddressBook, notes: NotesBook):
-    pass
+def add_contact(args, book: AddressBook, notes: NotesBook) -> str:
+    if len(args) < 1:
+        raise ValueError("Give me name and phone please.")
+    name = args[0]
+    phone = args[1] if len(args) > 1 else None
+
+    record = book.find(name)
+    if record is None:
+        record = Record(name)
+        book.add_record(record)
+        msg = "Contact added."
+    else:
+        msg = "Contact updated."
+
+    if phone:
+        record.add_phone(phone)
+    return msg
+
+
+@input_error
+def change_contact(args, book: AddressBook, notes: NotesBook) -> str:
+    if len(args) < 3:
+        raise ValueError("Give me name, old phone and new phone please.")
+    name, old_phone, new_phone = args[0], args[1], args[2]
+
+    record = book.find(name)
+    if record is None:
+        raise KeyError(name)
+
+    record.edit_phone(old_phone, new_phone)
+    return "Contact updated."
 
 
 @input_error
 def show_phone(args, book: AddressBook, notes: NotesBook) -> str:
-    (name,) = args
+    if not args:
+        raise ValueError("Enter user name.")
+    name = args[0]
     record = book.find(name)
     if record is None:
         raise KeyError(name)
@@ -52,13 +75,22 @@ def birthdays(args, book: AddressBook, notes: NotesBook):
 
 
 @input_error
-def search_contacts(args, book: AddressBook, notes: NotesBook):
-    pass
+def search_contacts(args, book: AddressBook, notes: NotesBook) -> str:
+    """Search contacts by query string."""
+    if not args:
+        raise ValueError("Enter search query.")
+    query = args[0]
+    results = book.search(query)
+    if not results:
+        return "No contacts found."
+    return "\n".join(str(record) for record in results)
 
 
 @input_error
 def delete_contact(args, book: AddressBook, notes: NotesBook) -> str:
-    (name,) = args
+    if not args:
+        raise ValueError("Enter user name.")
+    name = args[0]
     book.delete(name)
     return "Contact deleted."
 
@@ -84,12 +116,12 @@ def edit_note(args, book: AddressBook, notes: NotesBook):
 
 @input_error
 def delete_note(args, book: AddressBook, notes: NotesBook):
-    (note_id,) = args
+    if not args:
+        raise ValueError("Enter note ID.")
+    note_id = args[0]
     notes.delete(note_id)
     return "Note deleted."
 
-
-# --- notes: bonus tags ------------------------------------------------------
 
 @input_error
 def add_tag(args, book: AddressBook, notes: NotesBook):
