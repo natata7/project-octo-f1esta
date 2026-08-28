@@ -5,6 +5,7 @@ Save the application data in "assistant/data/data.pkl" directory.
 
 import pickle
 from pathlib import Path
+
 from assistant.address_book.address_book import AddressBook
 from assistant.notes.notes_book import NotesBook
 

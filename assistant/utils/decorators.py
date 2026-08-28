@@ -8,8 +8,9 @@ handler in cli/commands.py should be wrapped with @input_error
 instead of each handler having its own try/except.
 """
 
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable
+from typing import Any
 
 from assistant.utils.validators import ValidationError
 

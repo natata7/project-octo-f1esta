@@ -2,6 +2,7 @@
 
 from collections import UserDict
 from datetime import datetime, timedelta
+
 from assistant.models.record import Record
 
 
@@ -39,7 +40,7 @@ class AddressBook(UserDict):
                 results.append(record)
         return results
 
-    def get_upcoming_birthdays(self, days_ahead=7):
+    def get_upcoming_birthdays(self, days_ahead=7) -> list[dict[str, str]]:
         today = datetime.today().date()
         upcoming_birthdays = []
 

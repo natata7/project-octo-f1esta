@@ -1,6 +1,6 @@
 """Record — a single contact entry in the AddressBook."""
 
-from assistant.models.fields import Name, Phone, Email, Address, Birthday
+from assistant.models.fields import Address, Birthday, Email, Name, Phone
 
 
 class Record:

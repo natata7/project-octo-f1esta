@@ -14,7 +14,6 @@ from datetime import datetime
 class ValidationError(Exception):
     """Raised when user input fails validation."""
 
-    pass
 
 
 def validate_phone(phone: str) -> str:
@@ -42,7 +41,7 @@ def validate_email(email: str) -> str:
 
 def validate_birthday(birthday: str) -> str:
     try:
-        datetime.strptime(birthday, "%d.%m.%Y")
+        datetime.strptime(birthday, "%d.%m.%Y").astimezone()
     except ValueError:
         raise ValidationError("Invalid birthday. Use format DD.MM.YYYY.")
 

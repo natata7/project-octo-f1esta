@@ -8,10 +8,11 @@ strings inside Record.
 """
 
 from datetime import datetime
+
 from assistant.utils.validators import (
-    validate_phone,
-    validate_email,
     validate_birthday,
+    validate_email,
+    validate_phone,
 )
 
 
