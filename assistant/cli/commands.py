@@ -184,7 +184,7 @@ def sort_notes_by_tag(args, book: AddressBook, notes: NotesBook):
 
 
 def say_hello(args, book: AddressBook, notes: NotesBook) -> str:
-    return f"{BOLD}{RED}How can I help you?{RESET}"
+    return f"{BOLD}{CYAN}How can I help you?{RESET}"
 
 
 def show_help(args, book: AddressBook, notes: NotesBook) -> str:
@@ -197,8 +197,8 @@ def show_help(args, book: AddressBook, notes: NotesBook) -> str:
   {GREEN}close / exit{RESET} --> Save data and exit the assistant
 
 {BOLD}{YELLOW}Contacts:{RESET}
-  {GREEN}add-contact{RESET} --> Add a new contact
-  {GREEN}change-contact{RESET} --> Edit an existing contact
+  {GREEN}add-contact <name> <phone>{RESET} --> Add a new contact
+  {GREEN}change-contact <name> <phone>{RESET} --> Edit an existing contact
   {GREEN}phone <name>{RESET} --> Show contact information by name
   {GREEN}all-contacts{RESET} --> Show all contacts
   {GREEN}search-contacts <query>{RESET} --> Search contacts

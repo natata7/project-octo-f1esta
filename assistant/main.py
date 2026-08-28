@@ -3,6 +3,7 @@
 from assistant.cli.commands import COMMANDS
 from assistant.cli.parser import parse_input
 from assistant.storage.storage import load_data, save_data
+from assistant.utils.colors import BOLD, CYAN, RED, RESET
 
 EXIT_COMMANDS = {"close", "exit"}
 
@@ -37,7 +38,7 @@ def main() -> None:
 
             handler = COMMANDS.get(command)
             if handler is None:
-                print("Unknown command. Type 'help' to see available commands.")
+                print(f"{BOLD}{RED}Unknown command. Type {BOLD}{CYAN}'help'{RESET}{BOLD}{RED} to see available commands.{RESET}")
                 continue
 
             print(handler(args, book, notes))

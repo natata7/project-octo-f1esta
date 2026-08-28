@@ -9,6 +9,7 @@ address book and any future import/export feature.
 
 import re
 from datetime import datetime
+from assistant.utils.colors import YELLOW, RESET
 
 
 class ValidationError(Exception):
@@ -26,7 +27,7 @@ def validate_phone(phone: str) -> str:
         return f"+38{normalized_phone}"
 
     raise ValidationError(
-        "Invalid phone number. Use format +380XXXXXXXXX or 0XXXXXXXXX."
+        f"{YELLOW}Invalid phone number. Use format +380XXXXXXXXX or 0XXXXXXXXX.{RESET}"
     )
 
 
@@ -34,7 +35,7 @@ def validate_email(email: str) -> str:
     pattern = r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
 
     if not re.fullmatch(pattern, email):
-        raise ValidationError("Invalid email format.")
+        raise ValidationError(f"{YELLOW}Invalid email format.{RESET}")
 
     return email
 
@@ -43,6 +44,6 @@ def validate_birthday(birthday: str) -> str:
     try:
         datetime.strptime(birthday, "%d.%m.%Y").astimezone()
     except ValueError:
-        raise ValidationError("Invalid birthday. Use format DD.MM.YYYY.")
+        raise ValidationError(f"{YELLOW}Invalid birthday. Use format DD.MM.YYYY.{RESET}")
 
     return birthday
